@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Ollama Example of Streaming Code Generation",
   "main": "./dist/index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "tsx src/index.ts"
