@@ -6,3 +6,17 @@ This example combines the JSON output capability of Ollama and ZOD TypeScript sc
 
 1. Creating a schema for the LLM to confirm to
 2. Validating the response from the LLM with the schema
+
+## Getting Started
+
+Install dependencies
+
+```
+> pnpm install
+```
+
+Run full example
+
+```
+> pnpm start
+```

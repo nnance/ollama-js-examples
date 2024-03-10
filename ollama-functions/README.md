@@ -2,16 +2,11 @@
 
 Example function calling with Ollama. This project uses structured data responses with JSON output and validates the JSON produced by the LLM with ZOD schema.
 
-## Requirements
+## Key concepts
 
-- [ollama](https://ollama.com) - easily run local models
-- [llama2](https://ollama.com/library/llama2) - Open source LLM by Meta
-
-## Stack
-
-- ollama - ollama javascript library
-- zod - schema validation
-- zod-to-json-schema - zod to json schema
+1. Define the available functions with a ZOD schema
+2. Validating the response from the LLM with the schema
+3. Prompt splitting to leverage both JSON and Natural Language output
 
 ## Getting Started
 

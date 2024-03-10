@@ -43,8 +43,6 @@ const tools = z.object({
 
 const schema = zodToJsonSchema(tools);
 
-type ToolsDefinitions = z.infer<typeof tools>;
-
 async function useTools(
   question: string,
   tools: z.Schema,
@@ -111,7 +109,7 @@ function logFunctions(funcs: { [key: string]: object }) {
   return funcs;
 }
 
-function processFunctions(funcs: ToolsDefinitions) {
+function processFunctions(funcs: z.infer<typeof tools>) {
   return Object.keys(funcs).map((key) => {
     if (key === "get_current_weather") {
       return {
