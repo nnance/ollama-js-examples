@@ -1,0 +1,24 @@
+{
+  "name": "ollama-streaming-code-gen",
+  "version": "0.0.1",
+  "description": "Ollama Example of Streaming Code Generation",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsx src/index.ts"
+  },
+  "keywords": [
+    "genai",
+    "ollama"
+  ],
+  "author": "Nick Nance",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.25",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "ollama": "^0.4.9"
+  }
+}

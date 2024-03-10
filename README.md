@@ -7,6 +7,18 @@ Ollama examples in TypeScipt and Node.
 - [Structured Output](./ollama-structured-data/)
 - [Function Calling](./ollama-functions/)
 
+## Future Examples
+
+[ ] Stream Text to Code
+[ ] RAG with Pinecone
+[ ] RAG with Local Store
+[ ] Agents
+[ ] Playground
+[ ] Chat UI with NextJS
+[ ] Generative UI with Vercel AI
+[ ] RAG with ModelFusion
+[ ] Generative UI with ModelFusion
+
 ## Requirements
 
 These examples require Ollama to be installed with the following models. Each example can be easily changed to use different models.
