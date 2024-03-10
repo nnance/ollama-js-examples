@@ -6,15 +6,17 @@ Ollama examples in TypeScipt and Node.
 
 - [Structured Output](./ollama-structured-data/)
 - [Function Calling](./ollama-functions/)
+- [Streaming Code Generation](./ollama-streaming-code-gen/)
+- [NextJS Chatbo](./ollama-nextjs-chatbot/)
 
 ## Future Examples
 
-[ ] Stream Text to Code
+[x] Stream Text to Code
 [ ] RAG with Pinecone
 [ ] RAG with Local Store
 [ ] Agents
 [ ] Playground
-[ ] Chat UI with NextJS
+[x] Chat UI with NextJS
 [ ] Generative UI with Vercel AI
 [ ] RAG with ModelFusion
 [ ] Generative UI with ModelFusion
