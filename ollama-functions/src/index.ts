@@ -2,58 +2,52 @@ import ollama, { Message } from "ollama";
 import z from "zod";
 import { JsonSchema7Type, zodToJsonSchema } from "zod-to-json-schema";
 
-function getTools() {
-  const weatherSchema = z.object(
-    {
-      location: z.string({
-        description: "The city and state, e.g. San Francisco, CA",
-      }),
-      unit: z
-        .enum(["celsius", "fahrenheit"], {
-          description: "The unit of temperature to return",
-        })
-        .optional(),
-    },
-    {
-      description: "Get the current weather in a given location",
-    }
-  );
+const weatherSchema = z.object(
+  {
+    location: z.string({
+      description: "The city and state, e.g. San Francisco, CA",
+    }),
+    unit: z
+      .enum(["celsius", "fahrenheit"], {
+        description: "The unit of temperature to return",
+      })
+      .optional(),
+  },
+  {
+    description: "Get the current weather in a given location",
+  }
+);
 
-  const weatherForecastSchema = z.object(
-    {
-      location: z.string({
-        description: "The city and state, e.g. San Francisco, CA",
-      }),
-      format: z.enum(["celsius", "fahrenheit"], {
-        description:
-          "The temperature unit to use. Infer this from the users location.",
-      }),
-      num_days: z.number({
-        description: "The number of days to forecast",
-      }),
-    },
-    {
-      description: "Get the weather forecast for a given location",
-    }
-  );
+const weatherForecastSchema = z.object(
+  {
+    location: z.string({
+      description: "The city and state, e.g. San Francisco, CA",
+    }),
+    format: z.enum(["celsius", "fahrenheit"], {
+      description:
+        "The temperature unit to use. Infer this from the users location.",
+    }),
+    num_days: z.number({
+      description: "The number of days to forecast",
+    }),
+  },
+  {
+    description: "Get the weather forecast for a given location",
+  }
+);
 
-  const functionDefinitions = z.object({
-    get_current_weather: weatherSchema.optional(),
-    get_weather_forecast: weatherForecastSchema.optional(),
-  });
+const tools = z.object({
+  get_current_weather: weatherSchema.optional(),
+  get_weather_forecast: weatherForecastSchema.optional(),
+});
 
-  return functionDefinitions;
-}
+const schema = zodToJsonSchema(tools);
 
-async function toolToSchema() {
-  const tools = getTools();
-  const schema = zodToJsonSchema(tools);
-  return Promise.resolve({ schema, tools });
-}
+type ToolsDefinitions = z.infer<typeof tools>;
 
 async function useTools(
   question: string,
-  tools: ReturnType<typeof getTools>,
+  tools: z.Schema,
   schema: JsonSchema7Type
 ) {
   function getSystemPrompt(): Message {
@@ -117,7 +111,7 @@ function logFunctions(funcs: { [key: string]: object }) {
   return funcs;
 }
 
-function processFunctions(funcs: { [key: string]: object }) {
+function processFunctions(funcs: ToolsDefinitions) {
   return Object.keys(funcs).map((key) => {
     if (key === "get_current_weather") {
       return {
@@ -169,9 +163,12 @@ function respondToUser(question: string, response: object) {
   });
 }
 
-async function executeChain(query: string) {
-  return toolToSchema()
-    .then(({ schema, tools }) => useTools(query, tools, schema))
+async function executeChain(
+  query: string,
+  tools: z.Schema,
+  schema: JsonSchema7Type
+) {
+  return useTools(query, tools, schema)
     .then((funcs) => logFunctions(funcs))
     .then((result) => processFunctions(result))
     .then((result) => respondToUser(query, result))
@@ -182,4 +179,6 @@ const query =
   "what is the current weather and weekly forecast for Oklahoma City, OK?";
 
 console.log(`Executing query:\n${query}\n\n`);
-executeChain(query).then((result) => console.log(`Final result:\n${result}`));
+executeChain(query, tools, schema).then((result) =>
+  console.log(`Final result:\n${result}`)
+);
