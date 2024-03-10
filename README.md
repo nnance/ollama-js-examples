@@ -4,4 +4,5 @@ Ollama examples in TypeScipt and Node.
 
 ## Examples
 
-- [ollama-functions](./ollama-functions/)
+- [Structured Output](./ollama-structured-data/)
+- [Function Calling](./ollama-functions/)
