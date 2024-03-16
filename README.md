@@ -7,7 +7,7 @@ Ollama examples in TypeScipt and Node.
 - [Structured Output](./ollama-structured-data/)
 - [Function Calling](./ollama-functions/)
 - [Streaming Code Generation](./ollama-streaming-code-gen/)
-- [NextJS Chatbo](./ollama-nextjs-chatbot/)
+- [NextJS Chatbot](./ollama-nextjs-chatbot/)
 
 ## Future Examples
 

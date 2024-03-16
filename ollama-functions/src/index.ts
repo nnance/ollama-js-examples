@@ -1,4 +1,5 @@
 import ollama, { Message } from "ollama";
+import { stdout } from "process";
 import z from "zod";
 import { JsonSchema7Type, zodToJsonSchema } from "zod-to-json-schema";
 
@@ -156,8 +157,9 @@ function respondToUser(question: string, response: object) {
     model: "llama2",
     messages,
     options: {
-      temperature: 0.0,
+      temperature: 0.8,
     },
+    stream: true,
   });
 }
 
@@ -169,14 +171,16 @@ async function executeChain(
   return useTools(query, tools, schema)
     .then((funcs) => logFunctions(funcs))
     .then((result) => processFunctions(result))
-    .then((result) => respondToUser(query, result))
-    .then((result) => result.message.content);
+    .then((result) => respondToUser(query, result));
 }
 
 const query =
   "what is the current weather and weekly forecast for Oklahoma City, OK?";
 
 console.log(`Executing query:\n${query}\n\n`);
-executeChain(query, tools, schema).then((result) =>
-  console.log(`Final result:\n${result}`)
-);
+executeChain(query, tools, schema).then(async (result) => {
+  console.log(`Final result:\n`);
+  for await (const chunk of result) {
+    stdout.write(chunk.message.content);
+  }
+});
