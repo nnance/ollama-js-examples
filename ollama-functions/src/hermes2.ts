@@ -1,4 +1,4 @@
-import ollama from "ollama";
+import ollama, { Message } from "ollama";
 
 const tools = [
   {
@@ -20,6 +20,31 @@ const tools = [
           },
         },
         required: ["symbol"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "add_decimal_values",
+      description: `
+    add_decimal_values(num1: number, num2: number) -> number - Add two decimal numbers together
+      
+    Args: num1 (number): First value, num2 (number): Second value
+      
+    Returns: number - The sum of the two numbers
+    `,
+      parameters: {
+        type: "object",
+        properties: {
+          num1: {
+            type: "number",
+          },
+          num2: {
+            type: "number",
+          },
+        },
+        required: ["num1", "num2"],
       },
     },
   },
@@ -96,27 +121,65 @@ const toolResponse = {
   },
 };
 
-ollama
-  .chat({
+function callTool(tool: { name: string; arguments: object }) {
+  console.log(
+    `function called: ${tool.name} with params: ${JSON.stringify(tool.arguments)}\n`
+  );
+
+  if (tool.name === "get_stock_fundamentals") {
+    return `<tool_response>${JSON.stringify(toolResponse)}</tool_response>`;
+  }
+  return `No function called`;
+}
+
+async function useTools(question: string) {
+  const messages: Message[] = [
+    {
+      role: "system",
+      content: systemPrompt,
+    },
+    {
+      role: "user",
+      content: question,
+    },
+  ];
+
+  const firstResponse = await ollama.chat({
     model: "adrienbrault/nous-hermes2pro:Q8_0",
-    messages: [
-      {
+    messages,
+  });
+
+  messages.push(firstResponse.message);
+
+  if (firstResponse.message.content.indexOf("<tool_call>") === 0) {
+    const { content } = firstResponse.message;
+
+    try {
+      const elementContent = content.slice(12, content.length - 13);
+      const toolJson = elementContent.slice(1, elementContent.length - 2);
+      const toolCall = JSON.parse(toolJson);
+      const toolResponse = callTool(toolCall);
+
+      messages.push({
         role: "system",
-        content: systemPrompt,
-      },
-      {
-        role: "user",
-        content: `Fetch the stock fundamentals data for Tesla (TSLA)`,
-      },
-      {
-        role: "assistant",
-        content: `<tool_call>${JSON.stringify(assistantResponse)}</tool_call>`,
-      },
-      {
-        role: "user",
-        content: `<tool_response>${JSON.stringify(toolResponse)}</tool_response>`,
-      },
-    ],
-  })
-  .then((response) => console.log(response.message.content))
+        content: toolResponse,
+      });
+
+      const nextResponse = await ollama.chat({
+        model: "adrienbrault/nous-hermes2pro:Q8_0",
+        messages,
+      });
+
+      messages.push(nextResponse.message);
+    } catch (e) {
+      console.error(e);
+      console.dir(firstResponse.message);
+    }
+  }
+
+  return messages;
+}
+
+useTools("Fetch the stock fundamentals data for Tesla (TSLA)")
+  .then((messages) => console.log(messages[messages.length - 1].content))
   .catch(console.error);
