@@ -1,0 +1,25 @@
+{
+  "name": "ollama-functions-simple",
+  "version": "0.0.1",
+  "description": "Simple example of function calling in Ollama",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "genai",
+    "ai",
+    "ollama"
+  ],
+  "author": "Nick Nance",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "ollama": "^0.5.2"
+  }
+}
