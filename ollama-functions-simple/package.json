@@ -20,6 +20,7 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "ollama": "^0.5.2"
   }
 }
